@@ -5,13 +5,13 @@ Data Cleaning in SQL Queries
 Select * from PortfolioProject..NashvilleHousing
 
 ---------------------------
--- Standarize Data FORMAT (voy a quitar las hs del formato del dÌa, cambio de datetime a DATE)
+-- Standarize Data FORMAT (voy a quitar las hs del formato del d√≠a, cambio de datetime a DATE)
 
 Select SaleDate, convert (date, SaleDate) from PortfolioProject..NashvilleHousing
 
 update NashvilleHousing
 set Saledate = convert(date, saledate)
---esta conversiÛn anterior NO resultÛ, entonces agregaremos una columna con el formato que queremos
+--esta conversi√≥n anterior NO result√≥, entonces agregaremos una columna con el formato que queremos
 
 alter table NashvilleHousing
 add SaleDateConverted Date
@@ -25,14 +25,14 @@ set SaleDateConverted = convert(date, saledate)
 Select SaleDate, SaleDateConverted from PortfolioProject..NashvilleHousing
 
 ------------------------------------------------------------
--- Populate Property Adress Data
+-- Populate Property Address Data
 
---Busco valores donde el campo direcciÛn (adress) estÈ vacÌo
+--Busco valores donde el campo direcci√≥n (address) est√© vac√≠o
 Select *
 from PortfolioProject..NashvilleHousing
 where PropertyAddress is null
 
---voy a buscar repetidos (donde coinciden ParcelID+PropertyAdress), para luego ver si es necesario eliminarlos. Hago SelfJoin
+--voy a buscar repetidos (donde coinciden ParcelID+PropertyAddress), para luego ver si es necesario eliminarlos. Hago SelfJoin
 --para busqueda iguales
 Select *
 from PortfolioProject..NashvilleHousing AS A
@@ -50,7 +50,7 @@ join PortfolioProject..NashvilleHousing AS B
 Where a.PropertyAddress is null
 --order by a.ParcelID
 
---compruebo un dato q tenga solo una direccÛn cargada, aunque sean iguales
+--compruebo un dato q tenga solo una direcc√≥n cargada, aunque sean iguales
 Select *
 from PortfolioProject..NashvilleHousing
 where ParcelID= '025 07 0 031.00'
@@ -64,7 +64,7 @@ join PortfolioProject..NashvilleHousing AS B
 	AND a.[UniqueID ] <> b.[UniqueID ] 
 --Where a.PropertyAddress is null
 
---vuelvo a probar query anterior, NO deberÌa tener valores NULL (me sigue trayendo null xq en paso anterior NO modifiquÈ columna)
+--vuelvo a probar query anterior, NO deber√≠a tener valores NULL (me sigue trayendo null xq en paso anterior NO modifiqu√© columna)
 Select a.[UniqueID ], a.ParcelID, a.PropertyAddress, b.[UniqueID ], b.ParcelID, b.PropertyAddress
 --if a.PropertyAddress is null then a.PropertyAddress = b.PropertyAddress
 from PortfolioProject..NashvilleHousing AS A
@@ -82,7 +82,7 @@ join PortfolioProject..NashvilleHousing AS B
 	AND a.[UniqueID ] <> b.[UniqueID ] 
 Where a.PropertyAddress is null
 
---vuelvo a probar query anterior, ahora NO deberÌa tener valores NULL
+--vuelvo a probar query anterior, ahora NO deber√≠a tener valores NULL
 Select a.[UniqueID ], a.ParcelID, a.PropertyAddress, b.[UniqueID ], b.ParcelID, b.PropertyAddress
 from PortfolioProject..NashvilleHousing AS A
 join PortfolioProject..NashvilleHousing AS B
@@ -113,7 +113,7 @@ SUBSTRING (PropertyAddress, CHARINDEX(',',PropertyAddress)+1,LEN(PropertyAddress
 from NashvilleHousing
 
 
---en el punto anterior NO creÈ columnas separadas, lo harÈ ahora 
+--en el punto anterior NO cre√© columnas separadas, lo har√© ahora 
 ALTER TABLE NashvilleHousing
 ADD
 Adress nvarchar (255),
@@ -126,7 +126,7 @@ Address = SUBSTRING (PropertyAddress,1 , CHARINDEX(',',PropertyAddress)-1) ,
 State =SUBSTRING (PropertyAddress, CHARINDEX(',',PropertyAddress)+1, LEN(PropertyAddress)) 
 from NashvilleHousing
 
---verifico la creaciÛn correcta, miro sÛlo las primeras 10 posiciones
+--verifico la creaci√≥n correcta, miro s√≥lo las primeras 10 posiciones
 SELECT TOP (10) PropertyAddress
       ,[Address]
       ,[State]
@@ -138,11 +138,11 @@ select top (10) * from NashvilleHousing
  --lo haremos para Owner
 Select OwnerAddress from NashvilleHousing
 
--- como PARSENAME funciona para perÌodos, trae la fila sin cambios
+-- como PARSENAME funciona para per√≠odos, trae la fila sin cambios
 Select OwnerAddress,
 PARSENAME (OwnerAddress, 1) from NashvilleHousing
 
--- PARSENAME: cambiamos (,) por punto (.). Trae texto de izquierda a derecha seg˙n encuentra el punto? cantidad posiciones = 2do par·metro
+-- PARSENAME: cambiamos (,) por punto (.). Trae texto de izquierda a derecha seg√∫n encuentra el punto? cantidad posiciones = 2do par√°metro
 Select OwnerAddress,
 PARSENAME (REPLACE (OwnerAddress, ',', '.'),1),
 PARSENAME (REPLACE (OwnerAddress, ',', '.'),2),
@@ -247,7 +247,7 @@ from NashvilleHousing
 order by ParcelID
 --where row_num >1
 
--- como row number es un calculo nuevo, NO puedo hacer where ac· --> hago CTE para calcular y luego agregarÈ el WHERE
+-- como row number es un calculo nuevo, NO puedo hacer where ac√° --> hago CTE para calcular y luego agregar√© el WHERE
 -- para ver si cumplo condicion de duplicados
 
 WITH CTEduplicados AS
